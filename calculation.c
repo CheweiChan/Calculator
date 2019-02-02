@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Chewei Chan. All rights reserved.
 //
 
-#include "calcuation_H.h"
+#include "calculation.h"
 #include "math.h"
 /********************************************************************************************
 
