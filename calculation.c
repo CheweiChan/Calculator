@@ -1,6 +1,4 @@
-//
-//  calcuation_H.c
-//  calcuation
+//  calculation.c
 //
 //  Created by Chewei Chan on 2018/4/16.
 //  Copyright © 2018年 Chewei Chan. All rights reserved.
