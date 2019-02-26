@@ -1,2 +1,2 @@
 A simple calculator (no long number)
- * / () before + -
+calculation * / () before + -
