@@ -11,9 +11,9 @@
 #define NOP_ 100000006
 
 
-int stage=0;
-int number=0;
-int len=0;
+int g_stage=0;
+int g_solution=0;
+int g_len=0;
 
 
 typedef struct
@@ -24,7 +24,6 @@ typedef struct
     char s0[100];
     char s1[100];
     char s2[100];
-    int solution[100];
 }ST_matrix;
 
 ST_matrix matrix;
@@ -41,23 +40,11 @@ ST_matrix matrix;
 
 /********************************************************************************************/
 void print_solution(void)
-{
-    int i=0;
-    
-    while(matrix.solution[i] !=EQU)
-    {
-       
-        i++;
-        
-    }
-    printf("\nsolution=%d\n",matrix.solution[i-1]);
+{  
+    printf("\nsolution=%d\n",g_solution);
 }
-/********************************************************************************************/
 
-
-
-
-void print_matrix(int* s)
+void print_intmatrix(int* s)
 {
     int i=0;
     printf("matrix=");
@@ -89,10 +76,11 @@ void clear_charmatrix(char* s)
     }
 }
 
-void operation(int* s,int *sol)
+void operation(int* s)
 {
     int j=0,i=0;
     int cnt=0;
+    int temp[100];
     printf("---operation---\n");
     while(s[i] != EQU)
     {
@@ -125,34 +113,34 @@ void operation(int* s,int *sol)
     {
         if(s[i] != NOP_) 
         {
-        sol[cnt]=s[i];
+        temp[cnt]=s[i];
         cnt++;
         }
         i++;
     }
-    sol[cnt]=EQU;
+    temp[cnt]=EQU;
     
     i=0;
-    while(sol[i] != EQU)
+    while(temp[i] != EQU)
     {
-        if(sol[i]==NOP_)
+        if(temp[i]==NOP_)
         {
             i++;
             continue;
         }
-        if(sol[i]==PLUS)
+        if(temp[i]==PLUS)
         {
-            printf("%d+%d\n",sol[i-1],sol[i+1]);
-            sol[i+1]=sol[i-1]+sol[i+1];
+            printf("%d+%d\n",temp[i-1],temp[i+1]);
+            temp[i+1]=temp[i-1]+temp[i+1];
         }
-        if(sol[i]==SUB)
+        if(temp[i]==SUB)
         {
-            printf("%d-%d\n",sol[i-1],sol[i+1]);
-            sol[i+1]=s[i-1]-s[i+1];
+            printf("%d-%d\n",temp[i-1],temp[i+1]);
+            temp[i+1]=s[i-1]-s[i+1];
         }
         i++;
     }
-    number=sol[i-1];
+    g_solution=temp[i-1];
     printf("---operation---\n");
 }
 /********************************************************************************************/
@@ -238,12 +226,12 @@ void RemoveTempNum(char *s)
     int cnt=0;
     char temp2[20];
 
-    if(number >9)
+    if(g_solution >9)
     {
-        while( number != 0)
+        while( g_solution != 0)
         {
-        temp2[i++]=(number%10)+'0';
-        number /=10;
+        temp2[i++]=(g_solution%10)+'0';
+        g_solution /=10;
         printf("%c,%d  ",temp2[i-1],i);
         
         }
@@ -277,7 +265,7 @@ void RemoveTempNum(char *s)
         {
             if(s[i] == ')' )
             {    
-                s[i]= number +'0';
+                s[i]= g_solution +'0';
                 break;
             }
             i++;
@@ -285,18 +273,6 @@ void RemoveTempNum(char *s)
     }
 
 }
-
-void copyString(char *s1,char* s2)
-{
-    int i;
-
-    for(i=0;i<100;i++)
-    {
-        s1[i]=s2[i];
-    }
-
-}
-
 
 void removeTempChar(char *s)
 {
@@ -313,10 +289,21 @@ void removeTempChar(char *s)
     }
     temp[j]='\0';
 
+    for(;j>=0;j--)
+    {
+        s[j]=temp[j];
+    }
+}
+
+void copyString(char *s1,char* s2)
+{
+    int i;
+
     for(i=0;i<100;i++)
     {
-        s[i]=temp[i];
+        s1[i]=s2[i];
     }
+
 }
 
 int stringLen(char *s)
@@ -343,9 +330,9 @@ void InitMatrix(void)
 void PressNumber(char *s)
 {
     scanf("%s",s);   
-    len= stringLen(s);
-    s[len]='=';
-    s[len+1]='\0';
+    g_len= stringLen(s);
+    s[g_len]='=';
+    s[g_len+1]='\0';
 
 }
 
@@ -368,46 +355,45 @@ int main(int argc, const char * argv[])
 {
     while(1)
     {  
-        switch(stage)
+        switch(g_stage)
         {
             case 0:
                 InitMatrix();
                 printf("please press number\n");
                 PressNumber(matrix.s0);
                 if(HaveBrackets(matrix.s0))
-                stage=2;
+                g_stage=2;
                 else 
-                stage =1;                 
+                g_stage =1;                 
                 break;
                     
             case 1:
                 stoi(&matrix.s0[0], &matrix.num0[0]);
-                operation(&matrix.num0[0],matrix.solution);
+                operation(&matrix.num0[0]);
                 print_solution();
-                stage=0;
+                g_stage=0;
                 break;
                     
             case 2:
                 clear_intmatrix(&matrix.num0[0]);
-                clear_intmatrix(&matrix.solution[0]);
                 clear_intmatrix(&matrix.num1[0]);
                 TakeBrackets(matrix.s0,matrix.s1);
                 stoi(matrix.s1, &matrix.num0[0]);
-                operation(&matrix.num0[0],matrix.solution);
+                operation(&matrix.num0[0]);
                 
                 RemoveTempNum(matrix.s0); 
                 removeTempChar(matrix.s0);
 
                 if(HaveBrackets(matrix.s0))
                 {                    
-                    stage = 2;
+                    g_stage = 2;
                 }
                 else 
                 {
                     stoi(&matrix.s0[0],&matrix.num1[0]);
-                    operation(&matrix.num1[0],matrix.solution);
+                    operation(&matrix.num1[0]);
                     print_solution();
-                    stage = 0;
+                    g_stage = 0;
                 }
                 break;
 
