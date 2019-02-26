@@ -298,7 +298,7 @@ void copyString(char *s1,char* s2)
 }
 
 
-void removeA(char *s)
+void removeTempChar(char *s)
 {
     char temp[100];
     int i=0,j=0,k=0;
@@ -396,7 +396,7 @@ int main(int argc, const char * argv[])
                 operation(&matrix.num0[0],matrix.solution);
                 
                 RemoveTempNum(matrix.s0); 
-                removeA(matrix.s0);
+                removeTempChar(matrix.s0);
 
                 if(HaveBrackets(matrix.s0))
                 {                    
